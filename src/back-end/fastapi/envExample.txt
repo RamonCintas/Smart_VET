@@ -1,0 +1,33 @@
+# -------------------------
+# API CONFIG Local renomear envExample para .env
+# -------------------------
+API_ENV=Dev
+ALLOWED_ORIGINS=http://localhost:8501
+
+# -------------------------
+# API CONFIG Cloud Render
+# API_ENV=Prod
+# ALLOWED_ORIGINS=https://smart-vet-streamlit.onrender.com
+# -------------------------
+
+# =========================================================
+# SMART VET API ENV Local / Cloud Render
+# =========================================================
+
+# -------------------------
+# TABULAR MODEL (.pkl)
+# -------------------------
+HF_MODEL_REPO=guicon/techchallenge-animal-condition-model
+HF_MODEL_FILENAME=best_model.pkl
+
+# -------------------------
+# TABULAR MODEL (.csv)
+# -------------------------
+HF_DATA_REPO=guicon/techchallenge-animal-condition-dataset
+HF_DATA_FILENAME=data.csv
+
+# -------------------------
+# IMAGE MODEL (.keras)
+# -------------------------
+HF_IMAGE_REPO=ramoncg/techchallenge-pet-computer-vision-model
+HF_IMAGE_FILENAME=pet_model.keras
