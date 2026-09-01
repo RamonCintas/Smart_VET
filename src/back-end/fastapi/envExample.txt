@@ -1,0 +1,71 @@
+# -------------------------
+# API CONFIG Local renomear envExample para .env
+# -------------------------
+API_ENV=Dev
+ALLOWED_ORIGINS=http://localhost:8501
+
+# -------------------------
+# SECURITY
+# API_KEY: quando definida, exige o header X-API-Key em /predict/*
+# -------------------------
+# \src\front-end\streamlit\.env -> API_KEY=...
+# \src\back-end\fastapi\.env -> API_KEY=...
+
+API_KEY=
+MAX_UPLOAD_BYTES=5242880
+
+# -------------------------
+# API CONFIG Cloud Render
+# API_ENV=Prod
+# ALLOWED_ORIGINS=https://smart-vet-streamlit.onrender.com
+# -------------------------
+
+# =========================================================
+# SMART VET API ENV Local / Cloud Render
+# =========================================================
+
+# -------------------------
+# TABULAR MODEL (.pkl)
+# -------------------------
+HF_MODEL_REPO=guicon/techchallenge-animal-condition-model
+HF_MODEL_FILENAME=best_model.pkl
+
+# -------------------------
+# TABULAR MODEL (.csv)
+# -------------------------
+HF_DATA_REPO=guicon/techchallenge-animal-condition-dataset
+HF_DATA_FILENAME=data.csv
+
+# -------------------------
+# IMAGE MODEL (.keras)
+# -------------------------
+HF_IMAGE_REPO=ramoncg/techchallenge-pet-computer-vision-model
+HF_IMAGE_FILENAME=pet_model.keras
+
+# -------------------------
+# LLM INTERPRETATION MULTI-PROVIDER (opcional)
+# Ordem sugerida: Gemini -> Hugging Face -> regras locais.
+# Use LLM_API_KEY para providers novos. OPENAI_API_KEY segue suportado
+# quando LLM_PROVIDER=openai ou quando nenhuma config LLM_* for definida.
+# Nao versionar .env com chaves reais.
+# -------------------------
+# OPENAI_API_KEY=
+# LLM_PROVIDER=openai
+# LLM_BASE_URL=https://api.openai.com/v1
+# LLM_MODEL=gpt-5.6-luna
+# LLM_JSON_MODE=true
+
+LLM_PROVIDER=gemini
+LLM_API_KEY=
+LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+LLM_MODEL=gemini-3.6-flash
+LLM_JSON_MODE=true
+
+LLM_FALLBACK_1_PROVIDER=huggingface
+LLM_FALLBACK_1_API_KEY=
+LLM_FALLBACK_1_BASE_URL=https://router.huggingface.co/v1
+LLM_FALLBACK_1_MODEL=Qwen/Qwen2.5-7B-Instruct
+LLM_FALLBACK_1_JSON_MODE=true
+
+LLM_TIMEOUT_SECONDS=45
+LLM_TEMPERATURE=0.2

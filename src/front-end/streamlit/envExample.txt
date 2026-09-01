@@ -1,0 +1,15 @@
+# =========================================================
+# SMART VET Streamlit ENV Local renomear envExample para .env
+# =========================================================
+FASTAPI_URL=http://localhost:8000
+
+# Deve ser igual ao API_KEY configurado no back-end FastAPI
+# \src\front-end\streamlit\.env -> API_KEY=...
+# \src\back-end\fastapi\.env -> API_KEY=...
+
+SMART_VET_API_KEY=
+
+# =========================================================
+# SMART VET Streamlit ENV Cloud Render
+# FASTAPI_URL=https://smart-vet-fastapi.onrender.com
+# =========================================================
