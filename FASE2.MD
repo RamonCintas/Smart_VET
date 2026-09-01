@@ -1623,14 +1623,16 @@ infra.bat
 
 ---
 
-<details><summary><strong>🏁 Endpoints e Video</strong></summary>
+<details><summary><strong>🔎 Endpoints e Video</strong></summary>
 
-# 🖥️ Endpoints
+## 🖥️ Endpoints
+* 🌐 [Smart VET FastAPI e Streamlit no readme principal](./README.MD)
 
-* 🌐 [Smart VET Streamlit Render](https://techchallenge-smartvet-streamlit-oficial.onrender.com)
-* 🌐 [Smart VET FastAPI Render](https://techchallenge-smartvet-fastapi-oficial.onrender.com/docs) 
-> obs: Para testar o fastapi na rota /docs via Swagger use a API KEY (12092002)
+---
 
-# 📽️ Video
+## 🖥️ Video
 
-* 🌐 [Video Smart VET Fase 2 no youtube](https://www.youtube.com/...)
+* 🌐 [Video Smart VET no readme principal](./README.MD)
+
+
+</details>

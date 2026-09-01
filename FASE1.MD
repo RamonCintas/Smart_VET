@@ -101,24 +101,15 @@
 * 🤗 [Smart VET Animal Condition Dataset](https://huggingface.co/datasets/guicon/techchallenge-animal-condition-dataset/tree/main)
 * 🤗 [Smart VET Animal Condition Model](https://huggingface.co/guicon/techchallenge-animal-condition-model/tree/main)
 ---
+
 ## 🖥️ Endpoints
-* 🌐 [Smart VET Streamlit Render](https://smart-vet-streamlit.onrender.com/)
-* 🌐 [Smart VET FastAPI Render](https://smart-vet-fastapi.onrender.com/docs)
+* 🌐 [Smart VET FastAPI e Streamlit no readme principal](./README.MD)
+
 ---
 
-* 🚀 [Video Smart VET no youtube](https://www.youtube.com/watch?v=_kzFBY4bn_M)
+## 🖥️ Video
 
-<div align="center">
-
-<a href="https://www.youtube.com/watch?v=_kzFBY4bn_M" target="_blank" aria-label="Acessar o vídeo do projeto no YouTube">
- <img width=100% src="./assets/imgs/youtube-logo.gif" alt="Logotipo do YouTube" /></a>
-
-<details>
-  <summary>Descrição da Imagem</summary>
-  Esta imagem contém o logotipo do YouTube em movimento, sugerindo que o usuário pode clicar para assistir ao vídeo do projeto. O logotipo está centralizado, e o GIF cria uma sensação de interatividade. Ao clicar na imagem, o usuário será redirecionado para o vídeo do projeto no YouTube.
-</details>
-
-</div>
+* 🌐 [Video Smart VET no readme principal](./README.MD)
 
 ---
 
