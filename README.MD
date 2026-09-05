@@ -36,9 +36,9 @@ Cada etapa do projeto está organizada em arquivos separados para facilitar a na
 
 # 📽️ Video Vitrine
 
-* 🚀 [Video Vitrine Smart VET no youtube](https://youtu.be/tvq7lihJR9s)
+* 🚀 [Video Vitrine Smart VET no youtube](https://www.youtube.com/watch?v=seX2tgfP8Hk)
 
 <div align="center">
 
-<a href="https://youtu.be/tvq7lihJR9s" target="_blank" aria-label="Acessar o vídeo vitrine do projeto no YouTube">
+<a href="https://www.youtube.com/watch?v=seX2tgfP8Hk" target="_blank" aria-label="Acessar o vídeo vitrine do projeto no YouTube">
  <img width=100% src="./assets/imgs/logo-yt.png" alt="Logotipo do YouTube" /></a>
