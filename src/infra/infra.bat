@@ -397,6 +397,13 @@ REM ------------------------------------------------------------
 
 set "TF_VAR_llm_timeout_seconds=%LLM_TIMEOUT_SECONDS%"
 set "TF_VAR_llm_temperature=%LLM_TEMPERATURE%"
+if not defined LLM_MAX_RETRIES set "LLM_MAX_RETRIES=2"
+if not defined LLM_RETRY_BACKOFF_SECONDS set "LLM_RETRY_BACKOFF_SECONDS=1.0"
+set "TF_VAR_llm_max_retries=%LLM_MAX_RETRIES%"
+set "TF_VAR_llm_retry_backoff_seconds=%LLM_RETRY_BACKOFF_SECONDS%"
+if not defined ALLOW_REMOTE_CLINICAL_CONTEXT set "ALLOW_REMOTE_CLINICAL_CONTEXT=true"
+set "TF_VAR_allow_remote_clinical_context=%ALLOW_REMOTE_CLINICAL_CONTEXT%"
+set "TF_VAR_clinical_data_reload=%CLINICAL_DATA_RELOAD%"
 
 echo [OK] Variaveis Terraform configuradas.
 echo.

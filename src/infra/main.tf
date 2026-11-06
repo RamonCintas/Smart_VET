@@ -262,6 +262,26 @@ variable "llm_temperature" {
   default = ""
 }
 
+variable "llm_max_retries" {
+  type    = string
+  default = "2"
+}
+
+variable "llm_retry_backoff_seconds" {
+  type    = string
+  default = "1.0"
+}
+
+variable "allow_remote_clinical_context" {
+  type    = string
+  default = "true"
+}
+
+variable "clinical_data_reload" {
+  type    = string
+  default = "true"
+}
+
 # ============================================================
 # PROVIDER - GITHUB
 # ============================================================
@@ -460,6 +480,22 @@ resource "render_web_service" "fastapi" {
 
     LLM_TEMPERATURE = {
       value = var.llm_temperature
+    }
+
+    LLM_MAX_RETRIES = {
+      value = var.llm_max_retries
+    }
+
+    LLM_RETRY_BACKOFF_SECONDS = {
+      value = var.llm_retry_backoff_seconds
+    }
+
+    ALLOW_REMOTE_CLINICAL_CONTEXT = {
+      value = var.allow_remote_clinical_context
+    }
+
+    CLINICAL_DATA_RELOAD = {
+      value = var.clinical_data_reload
     }
   }
 }

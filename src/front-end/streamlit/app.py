@@ -26,7 +26,7 @@ def api_headers() -> dict:
 # HELPERS
 # =========================================================
 
-def render_interpretation(interpretation):
+def render_interpretation(interpretation, clinical_context=None):
     if not interpretation:
         return
 
@@ -51,6 +51,15 @@ def render_interpretation(interpretation):
         st.metric("Nível de risco", interpretation.get("risk_level", "N/A"))
 
     st.write(interpretation.get("explanation", ""))
+
+    if clinical_context:
+        medication_ids = clinical_context.get("matched_medication_ids", [])
+        medication_text = ", ".join(medication_ids) if medication_ids else "nenhum"
+        st.caption(
+            f"Contexto: {clinical_context.get('patient_id')} | "
+            f"Base: {clinical_context.get('data_version')} | "
+            f"Medicamentos relacionados: {medication_text}"
+        )
 
     insights = interpretation.get("actionable_insights", [])
     limitations = interpretation.get("limitations", [])
@@ -87,6 +96,7 @@ api_ok = False
 
 animals = []
 symptoms = []
+patients = []
 
 try:
 
@@ -105,6 +115,14 @@ try:
     animals = health["tabular"]["animals"]
 
     symptoms = health["tabular"]["symptoms"]
+
+    patients_response = requests.get(
+        f"{FASTAPI_URL}/patients",
+        headers=api_headers(),
+        timeout=15
+    )
+    patients_response.raise_for_status()
+    patients = patients_response.json()
 
 except Exception as e:
 
@@ -161,6 +179,29 @@ with st.expander("🟢 Status da API", expanded=False):
         "Registros",
         health["tabular"]["dataset_rows"]
     )
+
+    st.write("### Base clínica estruturada")
+    clinical_data = health["clinical_data"]
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Pacientes", clinical_data["patient_count"])
+    col2.metric("Medicamentos", clinical_data["medication_count"])
+    col3.metric("Versão", clinical_data["data_version"])
+
+
+patient_options = {"Sem contexto clínico": None}
+patient_options.update(
+    {
+        f"{patient['id']} — {patient['name']} ({patient['species']})": patient["id"]
+        for patient in patients
+    }
+)
+
+selected_patient_label = st.selectbox(
+    "Paciente para contextualizar a interpretação",
+    list(patient_options.keys()),
+    help="A API consulta o prontuário estruturado pelo ID selecionado."
+)
+selected_patient_id = patient_options[selected_patient_label]
 
 
 
@@ -230,6 +271,9 @@ with tab1:
             "symptoms5": symptoms5
         }
 
+        if selected_patient_id:
+            payload["patient_id"] = selected_patient_id
+
         try:
             response = requests.post(
                 f"{FASTAPI_URL}/predict/condition",
@@ -257,7 +301,10 @@ with tab1:
                 f"{probability * 100:.2f}%" if probability else "N/A"
             )
 
-            render_interpretation(result.get("interpretation"))
+            render_interpretation(
+                result.get("interpretation"),
+                result.get("clinical_context")
+            )
 
             with st.expander("Resposta completa"):
                 st.json(result)
@@ -306,6 +353,7 @@ with tab2:
                 response = requests.post(
                     f"{FASTAPI_URL}/predict/image",
                     files=files,
+                    data={"patient_id": selected_patient_id or ""},
                     headers=api_headers(),
                     timeout=120
                 )
@@ -390,7 +438,10 @@ with tab2:
                             st.progress(float(skin["confidence"]))
                             st.caption(f"{skin['confidence']*100:.2f}%")
 
-                render_interpretation(results.get("interpretation"))
+                render_interpretation(
+                    results.get("interpretation"),
+                    results.get("clinical_context")
+                )
 
             except Exception as e:
                 st.error(f"Erro: {e}")
