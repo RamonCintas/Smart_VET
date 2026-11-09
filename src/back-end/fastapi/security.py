@@ -19,6 +19,15 @@ def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API key")
 
 
+def require_api_key_in_production() -> None:
+    from main import get_settings
+
+    settings = get_settings()
+    if settings.api_env.lower() == "prod" and not settings.api_key:
+        logger.error("API_KEY is required in production for security routes")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="API_KEY not configured")
+
+
 def validate_image_bytes(image_bytes: bytes) -> None:
     from main import get_settings
 
