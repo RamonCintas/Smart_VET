@@ -13,7 +13,16 @@ cd /d "%~dp0"
 where python >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] Python nao encontrado.
-    echo Instale Python 3.13.14
+    echo Instale Python 3.13.
+    pause
+    exit /b 1
+)
+
+python -c "import sys; sys.exit(0 if sys.version_info[:2] == (3, 13) else 1)"
+if errorlevel 1 (
+    echo [ERROR] Versao do Python nao suportada:
+    python --version
+    echo Instale Python 3.13.
     pause
     exit /b 1
 )
@@ -34,6 +43,17 @@ if not exist "front-end\streamlit\.env" (
     echo.
     echo SOLUCAO:
     echo copy front-end\streamlit\envExample.txt front-end\streamlit\.env
+    pause
+    exit /b 1
+)
+
+:: CHECK TESTS .ENV
+if not exist "tests\.env" (
+    echo [ERROR] Tests .env nao encontrado.
+    echo.
+    echo SOLUCAO:
+    echo copy tests\envExample.txt tests\.env
+    echo Configure TEST_API_KEY com o mesmo valor de API_KEY no backend.
     pause
     exit /b 1
 )

@@ -19,11 +19,18 @@ cd "$SCRIPT_DIR" || exit 1
 
 if ! command -v python3 >/dev/null 2>&1; then
     echo "[ERROR] Python não encontrado."
-    echo "Instale Python 3.13.14"
+    echo "Instale Python 3.13."
     exit 1
 fi
 
 PYTHON="python3"
+
+if ! "$PYTHON" -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 13) else 1)'; then
+    echo "[ERROR] Versão do Python não suportada:"
+    "$PYTHON" --version
+    echo "Instale Python 3.13."
+    exit 1
+fi
 
 # ============================================================
 # CHECK BACKEND .ENV
@@ -46,6 +53,19 @@ if [ ! -f "front-end/streamlit/.env" ]; then
     echo
     echo "SOLUÇÃO:"
     echo "cp front-end/streamlit/envExample.txt front-end/streamlit/.env"
+    exit 1
+fi
+
+# ============================================================
+# CHECK TESTS .ENV
+# ============================================================
+
+if [ ! -f "tests/.env" ]; then
+    echo "[ERROR] Tests .env não encontrado."
+    echo
+    echo "SOLUÇÃO:"
+    echo "cp tests/envExample.txt tests/.env"
+    echo "Configure TEST_API_KEY com o mesmo valor de API_KEY no backend."
     exit 1
 fi
 
