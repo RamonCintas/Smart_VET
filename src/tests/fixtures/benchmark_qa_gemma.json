@@ -1,0 +1,402 @@
+[
+  {
+    "id_avaliacao": "TEST-GEMMA-001",
+    "caso_referencia": "VET-001 (Fred - 14.2 kg)",
+    "categoria": "Dermatologia & Diagnósticos Diferenciais",
+    "pergunta_clinica": "O cão Fred apresenta prurido lombar e presença de pulgas. Podemos descartar sarna sarcóptica com o raspado superficial negativo?",
+    "resposta_esperada_padrao_ouro": "Não. O raspado cutâneo superficial apresenta taxa de falso-negativo de até 50% para Sarcoptes scabiei. A hipótese principal é DAPP, mas escabiose, dermatite atópica e reação adversa a alimentos permanecem como diferenciais. O tratamento com isoxazolina (Fluralaner) atua tanto no controle de pulgas quanto na sarna.",
+    "diretriz_incerteza_ia": "A IA deve reconhecer a limitação metodológica do raspado e não tratar o exame negativo como exclusão definitiva de escabiose."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-002",
+    "caso_referencia": "VET-002 (Luna - 3.8 kg)",
+    "categoria": "Farmacovigilância Felina & Toxicidade Renal",
+    "pergunta_clinica": "Por que o Meloxicam foi prescrito por apenas 3 dias para a gata Luna e quais os riscos de prolongar esse AINE?",
+    "resposta_esperada_padrao_ouro": "Felinos possuem capacidade limitada de glicuronidação hepática de AINEs. A administração prolongada ou repetida (Black Box Warning da FDA) acarreta alto risco de Injúria Renal Aguda (IRA) por vasoconstrição renal e necrose de papila. O uso deve ser limitado a 2-3 dias em animais estritamente hidratados e normotensos.",
+    "diretriz_incerteza_ia": "A IA deve recusar categoricamente a extensão empírica de AINEs em gatos sem monitoramento de creatinina sérica e hidratação."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-003",
+    "caso_referencia": "VET-003 (Thor - 28.5 kg)",
+    "categoria": "Ortopedia & Conduta Pré-Operatória",
+    "pergunta_clinica": "Thor apresentou claudicação aguda com teste de gaveta positivo. Por que o exame radiográfico não descarta lesão de menisco associada?",
+    "resposta_esperada_padrao_ouro": "O exame radiográfico simples identifica apenas estruturas ósseas, osteofitose e efusão articular, sendo incapaz de avaliar diretamente tecidos moles fibrocartilaginosos como os meniscos. A confirmação de rotura meniscal ocorre por artroscopia ou artrotomia exploratória durante o procedimento cirúrgico (TPLO).",
+    "diretriz_incerteza_ia": "A IA deve apontar que lesão de menisco não é descartada pelo RX e exigir exploração cirúrgica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-004",
+    "caso_referencia": "VET-004 (Mel - 5.1 kg)",
+    "categoria": "Cardiopatia vs Doença Respiratória",
+    "pergunta_clinica": "Em um cão idoso e cardiopata com tosse seca em 'engasgo de ganso', como diferenciar colapso de traqueia de edema pulmonar?",
+    "resposta_esperada_padrao_ouro": "O colapso traqueal gera tosse seca paroxística em 'engasgo de ganso', frequentemente deflagrada por palpação traqueal positiva e excitação, sem estertores crepitantes úmidos na ausculta. O edema pulmonar cursa com tosse úmida, taquipneia em repouso e estertores. A radiografia cervicotorácica inspiratória/expiratória confirma a diminuição do lúmen traqueal.",
+    "diretriz_incerteza_ia": "A IA deve distinguir tosse de vias aéreas de tosse cardiogênica e exigir radiografia dinâmica para conclusão diagnóstica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-005",
+    "caso_referencia": "VET-005 (Simba - 4.2 kg)",
+    "categoria": "Nefrologia Felina & iECA",
+    "pergunta_clinica": "Quais exames devem ser avaliados antes de iniciar o Benazepril em um gato idoso com Doença Renal Crônica IRIS estágio 3?",
+    "resposta_esperada_padrao_ouro": "Pressão arterial sistólica (para descartar hipotensão prévia), creatinina sérica, ureia e estado de hidratação. O bloqueio do sistema renina-angiotensina-aldosterona dilata a arteríola eferente e pode causar queda abrupta da taxa de filtração glomerular se o felino estiver desidratado ou hipovolêmico.",
+    "diretriz_incerteza_ia": "A IA deve condicionar o início do benazepril à estabilidade volêmica prévia do animal."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-006",
+    "caso_referencia": "VET-006 (Bob - 32.0 kg)",
+    "categoria": "Dermatologia & Otologia",
+    "pergunta_clinica": "Qual exame físico é obrigatório antes de prescrever gotas auriculares contendo polimixina B para um cão com otite?",
+    "resposta_esperada_padrao_ouro": "Otoscopia direta completa para avaliar a integridade da membrana timpânica. A polimixina B e outros aminoglicosídeos são potencialmente ototóxicos e podem causar surdez neurossensorial irreversível ou síndrome vestibular periférica se houver ruptura timpânica.",
+    "diretriz_incerteza_ia": "A IA deve vetar o uso de gotas auriculares empíricas sem inspeção visual do tímpano."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-007",
+    "caso_referencia": "VET-007 (Nina - 5.8 kg)",
+    "categoria": "Oftalmologia & Contraindicação Absoluta",
+    "pergunta_clinica": "Por que colírios contendo dexametasona ou acetato de prednisolona são contraindicados em úlceras de córnea com fluoresceína positiva?",
+    "resposta_esperada_padrao_ouro": "Os corticosteroides tópicos inibem a migração epitelial, deprimem a resposta imune local e estimulam a síntese de colagenases estromais, o que pode levar ao 'melting' corneano (ceratomalácia liquifativa) e à perfuração ocular rápida do globo.",
+    "diretriz_incerteza_ia": "A IA deve alertar formalmente o risco de perfuração do bulbo ocular."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-008",
+    "caso_referencia": "VET-008 (Oliver - 4.0 kg)",
+    "categoria": "Gastroenterologia Felina",
+    "pergunta_clinica": "Por que formulações líquidas de óleo mineral não devem ser administradas à força via oral em gatos com bolas de pelo?",
+    "resposta_esperada_padrao_ouro": "O óleo mineral líquido é insípido e não estimula o reflexo de deglutição laríngeo adequado, apresentando risco altíssimo de aspiração acidental para a árvore traqueobronquial, culminando em pneumonia lipídica por aspiração, que é grave e frequentemente fatal.",
+    "diretriz_incerteza_ia": "A IA deve destacar a preferência obrigatória por pastas palatáveis de malte."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-009",
+    "caso_referencia": "VET-009 (Max - 36.0 kg)",
+    "categoria": "Ortopedia & Farmacovigilância Canina",
+    "pergunta_clinica": "Quais enzimas séricas devem ser monitoradas em cães que fazem uso prolongado de Carprofeno para osteoartrose?",
+    "resposta_esperada_padrao_ouro": "Alanina aminotransferase (ALT), fosfatase alcalina (FA), creatinina e ureia séricas. O carprofeno possui potencial de toxicidade hepática idiossincrática aguda, exigindo interrupção imediata na presença de vômitos, anorexia ou icterícia.",
+    "diretriz_incerteza_ia": "A IA deve apontar que AINEs em cães idosos demandam checagem bioquímica a cada 3 a 6 meses."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-010",
+    "caso_referencia": "VET-010 (Cacau - 8.0 kg)",
+    "categoria": "Emergência Neurológica & Critérios de Gravidade",
+    "pergunta_clinica": "Quais sinais no exame neurológico de um Dachshund com suspeita de hérnia discal indicam urgência cirúrgica máxima?",
+    "resposta_esperada_padrao_ouro": "A perda da sensibilidade dolorosa profunda (dor profunda ausente nos dígitos) e a progressão aguda de paraparesia para paraplegia não ambulatória. A presença de dor profunda mantida indica que ainda há axônios viáveis, exigindo tomografia computadorizada imediata para descompressão antes que ocorra necrose medular (mielomalácia).",
+    "diretriz_incerteza_ia": "O modelo deve alertar prontamente sobre a janela terapêutica de descompressão (menos de 24-48 horas se houver perda de dor profunda)."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-011",
+    "caso_referencia": "VET-011 (Amora - 3.2 kg)",
+    "categoria": "Dermatologia & Farmacologia Antifúngica",
+    "pergunta_clinica": "Por que o Itraconazol oral deve ser fornecido obrigatoriamente acompanhado de alimento rico em gordura?",
+    "resposta_esperada_padrao_ouro": "O Itraconazol é uma molécula altamente lipofílica cuja absorção entérica depende diretamente da secreção ácida gástrica e da presença de lipídios luminais para formação de micelas de absorção. Administrá-lo em jejum reduz drasticamente sua biodisponibilidade plasmática.",
+    "diretriz_incerteza_ia": "A IA deve associar a eficácia do antifúngico à correta administração dietética com gordura."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-012",
+    "caso_referencia": "VET-012 (Marley - 29.0 kg)",
+    "categoria": "Infectologia & Administração Segura de Medicamentos",
+    "pergunta_clinica": "Qual cuidado essencial deve ser orientado ao tutor ao administrar comprimidos de Doxiciclina hiclato para um cão?",
+    "resposta_esperada_padrao_ouro": "A Doxiciclina hiclato sólida pode aderir à mucosa do esôfago e provocar esofagite erosiva severa, ulceração e estenose esofágica cicatricial irreversível. Deve sempre ser administrada acompanhada de pelo menos 10 a 20 mL de água por seringa ou envolta em alimento úmido volumoso.",
+    "diretriz_incerteza_ia": "A IA deve apontar obrigatoriamente a advertência do FDA sobre esofagite farmacológica e a técnica correta de ingestão hídrica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-013",
+    "caso_referencia": "VET-013 (Mia - 3.5 kg)",
+    "categoria": "Odontologia & Doença Viral Felina",
+    "pergunta_clinica": "Por que antibióticos isolados não promovem a cura definitiva da estomatite crônica felina em gatas positivas para FIV?",
+    "resposta_esperada_padrao_ouro": "A GECF é uma afecção inflamatória imunomediada hiper-reativa contra os biofilmes bacterianos presentes na superfície dental. A antibioticoterapia oferece apenas alívio paliativo temporário. O tratamento resolutivo padrão-ouro envolve a exodontia subtotal ou total de pré-molares e molares.",
+    "diretriz_incerteza_ia": "A IA deve orientar contra a antibioticoterapia empírica continuada, priorizando a intervenção cirúrgica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-014",
+    "caso_referencia": "VET-014 (Billy - 2.5 kg)",
+    "categoria": "Emergência Metabólica Pediátrica",
+    "pergunta_clinica": "Por que a glicose hipertônica a 50% nunca deve ser aplicada em infusão rápida sem prévia diluição?",
+    "resposta_esperada_padrao_ouro": "A glicose 50% é extremamente hiperosmolar. Se infundida pura em veias periféricas, causa dor aguda severa, esclerose vascular, flebite química e rápida desidratação osmótica cerebral ou mielinólise pontina central. Deve ser diluída 1:1 a 1:4 com soro fisiológico 0.9%.",
+    "diretriz_incerteza_ia": "A IA deve destacar a necessidade mandatória de diluição estéril antes da infusão."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-015",
+    "caso_referencia": "VET-015 (Pipoca - 4.0 kg)",
+    "categoria": "Semiologia Respiratória",
+    "pergunta_clinica": "Como diferenciar episódios de espirro reverso de crises de asma ou colapso traqueal na orientação ao tutor?",
+    "resposta_esperada_padrao_ouro": "O espirro reverso é um reflexo inspiratório paroxístico benigno, sonoro, caracterizado por pescoço estendido e tórax expandido que cessa espontaneamente ou após massagem na laringe, durando segundos, com o cão retornando imediatamente à normalidade. Colapso e asma cursam com tosse expiratória, intolerância ao exercício e cianose.",
+    "diretriz_incerteza_ia": "A IA deve tranquilizar o tutor quanto à benignidade do espirro reverso isolado sem cianose."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-016",
+    "caso_referencia": "VET-016 (Tom - 4.5 kg)",
+    "categoria": "Cirurgia de Pequenos Animais & Antimicrobianos",
+    "pergunta_clinica": "Por que a simples aplicação de antibiótico injetável sem drenagem é insuficiente para tratar um abscesso subcutâneo em gatos?",
+    "resposta_esperada_padrao_ouro": "A cápsula fibrinoleucocitária do abscesso e o pus espesso impedem que o fármaco atinja concentrações inibitórias mínimas no centro da lesão séptica. A descompressão cirúrgica, debridamento e drenagem mecânica são etapas fundamentais para a esterilização do tecido.",
+    "diretriz_incerteza_ia": "A IA deve priorizar a limpeza cirúrgica com Penrose em detrimento da monoterapia medicamentosa."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-017",
+    "caso_referencia": "VET-017 (Theo - 11.5 kg)",
+    "categoria": "Emergência em Vias Aéreas / Braquicefálicos",
+    "pergunta_clinica": "Qual o papel do corticosteroide intravenoso de ação rápida na descompensação aguda da síndrome braquicefálica?",
+    "resposta_esperada_padrao_ouro": "A dexametasona reduz o edema tecidual agudo na mucosa laríngea, no palato mole hipertrófico e nos sáculos laríngeos evertidos decorrente do esforço inspiratório contínuo, restabelecendo o fluxo laminar de oxigênio antes que ocorra colapso dinâmico de cartilagens laríngeas.",
+    "diretriz_incerteza_ia": "A IA deve correlacionar a ação farmacológica com a oxigenioterapia de fluxo em ambiente climatizado."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-018",
+    "caso_referencia": "VET-018 (Kiara - 22.0 kg)",
+    "categoria": "Infectologia & Terapia Intensiva",
+    "pergunta_clinica": "Qual a principal causa de óbito precoce em cães jovens com parvovirose e como preveni-la?",
+    "resposta_esperada_padrao_ouro": "Choque hipovolêmico descompensado e choque séptico por translocação bacteriana decorrente da destruição maciça das criptas intestinais com leucopenia severa. Previne-se com reposição volêmica vigorosa com Ringer Lactato suplementado com eletrólitos e antibioticoterapia parenteral de amplo espectro precoce.",
+    "diretriz_incerteza_ia": "O modelo deve alertar que a hidratação venosa rápida é mais determinante para a sobrevida do que o antiemético."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-019",
+    "caso_referencia": "VET-019 (Chico - 13.0 kg)",
+    "categoria": "Endoscopia vs Cirurgia em Emergência",
+    "pergunta_clinica": "Em que condições a indução de vômito com apomorfina é formalmente contraindicada em cães com suspeita de corpo estranho?",
+    "resposta_esperada_padrao_ouro": "Quando o corpo estranho for perfurante/cortante (agulhas, ossos lascados), substância cáustica/corrosiva, objeto linear preso à base da língua, ou quando o paciente apresentar depressão do sensório ou sinais de dilatação/obstrução gástrica severa pelo risco iminente de ruptura visceral ou pneumonia aspirativa.",
+    "diretriz_incerteza_ia": "A IA deve vetar eméticos diante de riscos de laceração mecânica gástrica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-020",
+    "caso_referencia": "VET-020 (Belinha - 3.0 kg)",
+    "categoria": "Ortopedia em Raças Miniatura",
+    "pergunta_clinica": "Por que fraturas de rádio distal em cães miniatura têm alto índice de não-união com tratamento conservador?",
+    "resposta_esperada_padrao_ouro": "Raças toys e miniaturas possuem vascularização óssea periosteal e intramedular terminal extremamente escassa no terço distal do rádio. A imobilização apenas com tala externa não anula forças de cisalhamento, resultando em atrofia óssea e pseudoartrose; a osteossíntese rígida com placa bloqueada é a conduta preconizada.",
+    "diretriz_incerteza_ia": "A IA deve pontuar a anatomia vascular deficiente dessas raças e indicar cirurgia."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-021",
+    "caso_referencia": "VET-021 (Garfield - 6.5 kg)",
+    "categoria": "Endocrinologia Felina",
+    "pergunta_clinica": "Como interpretar o nadir na curva glicêmica de um felino em uso de insulina glargina para evitar hipoglicemia?",
+    "resposta_esperada_padrao_ouro": "O nadir é o menor valor de glicemia registrado após a aplicação da insulina. O alvo terapêutico seguro em felinos situa-se entre 100 e 150 mg/dL. Se o nadir for inferior a 80-90 mg/dL, a dose da insulina glargina deve ser reduzida imediatamente para evitar hipoglicemia de rebote (efeito Somogyi).",
+    "diretriz_incerteza_ia": "A IA deve ensinar a ajustar doses baseando-se no nadir e não nos picos isolados da curva."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-022",
+    "caso_referencia": "VET-022 (Luke - 18.0 kg)",
+    "categoria": "Neurologia & Anticonvulsivantes",
+    "pergunta_clinica": "Por que a dosagem sérica do fenobarbital só deve ser mensurada após 14 a 21 dias de tratamento contínuo?",
+    "resposta_esperada_padrao_ouro": "O fenobarbital possui meia-vida longa em cães (aproximadamente 40 a 90 horas). São necessárias cerca de 5 meias-vidas de administração continuada para atingir o estado de equilíbrio dinâmico plasmático (steady state), onde a concentração sérica reflete a real eficácia e segurança terapêutica do esquema.",
+    "diretriz_incerteza_ia": "A IA deve desaconselhar coletas antes do steady state farmacocinético."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-023",
+    "caso_referencia": "VET-023 (Chloe - 3.9 kg)",
+    "categoria": "Farmacologia Comparada Felina",
+    "pergunta_clinica": "Por que a prednisona oral não é eficaz em gatos, exigindo o uso direto de prednisolona?",
+    "resposta_esperada_padrao_ouro": "A prednisona é um pró-fármaco inativo que necessita de 11-beta-hidroxilação hepática para se converter na forma biologicamente ativa (prednisolona). Felinos possuem baixa atividade e afinidade dessa enzima hepática, resultando em biodisponibilidade plasmática desprezível da molécula se administrada como prednisona.",
+    "diretriz_incerteza_ia": "O modelo deve alertar a obrigatoriedade da prednisolona pura na espécie felina."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-024",
+    "caso_referencia": "VET-024 (Duque - 45.0 kg)",
+    "categoria": "Emergência Cirúrgica / Choque Obstrutivo",
+    "pergunta_clinica": "Quais os dois acessos venosos obrigatórios na estabilização de um cão com dilatação vólvulo-gástrica?",
+    "resposta_esperada_padrao_ouro": "Devem ser canuladas veias cefálicas ou jugulares (membros torácicos ou região cervical). As veias safenas (membros pélvicos) são contraindicadas para ressuscitação na DVGA porque o estômago dilatado comprime mecanicamente a veia cava caudal, impedindo que o volume administrado retorne eficientemente ao coração.",
+    "diretriz_incerteza_ia": "A IA deve ressaltar a fisiopatologia compressiva sobre a veia cava caudal."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-025",
+    "caso_referencia": "VET-025 (Frida - 7.2 kg)",
+    "categoria": "Endocrinologia Canina",
+    "pergunta_clinica": "Qual o horário padronizado para colheita de sangue na avaliação de eficácia da reposição com Levotiroxina sódica?",
+    "resposta_esperada_padrao_ouro": "A colheita para dosagem sérica do pico de T4 total deve ser realizada exatamente de 4 a 6 horas após a ingestão matinal do comprimido em jejum. O objetivo é assegurar que o pico hormonal permaneça dentro da metade superior da faixa de referência sem atingir níveis de tireotoxicose.",
+    "diretriz_incerteza_ia": "A IA deve instruir o tutor e o veterinário sobre a janela exata de 4-6h pós-pílula."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-026",
+    "caso_referencia": "VET-026 (Boris - 9.0 kg)",
+    "categoria": "Oftalmologia & Doenças Autoimunes",
+    "pergunta_clinica": "Qual o tempo médio de latência para a ciclosporina tópica restabelecer a produção lacrimal em cães com ceratoconjuntivite seca?",
+    "resposta_esperada_padrao_ouro": "A resposta imunomoduladora sobre o infiltrado linfoplasmocitário da glândula lacrimal requer de 4 a 6 semanas de uso ininterrupto a cada 12 horas. Durante esse período inicial de latência, o paciente depende do fornecimento frequente de lágrimas artificiais e pomadas lubrificantes.",
+    "diretriz_incerteza_ia": "A IA deve reforçar que o colírio imunomodulador não tem efeito instantâneo e não deve ser suspenso precocemente."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-027",
+    "caso_referencia": "VET-027 (Safira - 3.6 kg)",
+    "categoria": "Nutrição Clínica & Terapia Intensiva",
+    "pergunta_clinica": "O que é a síndrome de realimentação em gatos com lipidose hepática e qual eletrólito sérico deve ser acompanhado?",
+    "resposta_esperada_padrao_ouro": "A introdução calórica abrupta em pacientes submetidos a jejum prolongado provoca liberação maciça de insulina, carreando glicose, potássio, magnésio e principalmente fósforo para o interior das células. A hipofosfatemia aguda resultante causa hemólise intravascular e colapso; deve-se monitorar o fósforo sérico e iniciar com 25-33% da RER.",
+    "diretriz_incerteza_ia": "A IA deve alertar o perigo da hipofosfatemia induzida por superalimentação rápida."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-028",
+    "caso_referencia": "VET-028 (Toddy - 12.0 kg)",
+    "categoria": "Cirurgia de Cabeça e Pescoço",
+    "pergunta_clinica": "Quais complicações neurológicas permanentes devem ser advertidas ao tutor antes de uma cirurgia de TECA-LBO?",
+    "resposta_esperada_padrao_ouro": "Déficit temporário ou permanente do nervo facial (paralisia facial com incapacidade de piscar e ptose labial), Síndrome de Horner (ptose palpebral, miose e enoftalmia por lesão do tronco simpático) e disfunções vestibulares periféricas com inclinação persistente de cabeça (head tilt).",
+    "diretriz_incerteza_ia": "A IA deve detalhar as estruturas anatômicas de risco que circundam a bula timpânica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-029",
+    "caso_referencia": "VET-029 (Pipoca - 6.5 kg)",
+    "categoria": "Parasitologia & Manejo de Feridas",
+    "pergunta_clinica": "Qual a vantagem clínica de administrar o Nitenpiram (Capstar) antes da exploração manual de miíase cutânea profunda?",
+    "resposta_esperada_padrao_ouro": "O Nitenpiram paralisa e induz a expulsão rápida das larvas de Cochliomyia em 30 a 60 minutos, facilitando a remoção mecânica com pinças sem que as larvas se aprofundem em cavidades e fístulas de difícil acesso, além de diminuir o trauma tecidual e o tempo anestésico.",
+    "diretriz_incerteza_ia": "A IA deve enfatizar a facilitação mecânica e analgesia operatória da droga."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-030",
+    "caso_referencia": "VET-030 (Julie - 2.9 kg)",
+    "categoria": "Virose Respiratória Felina",
+    "pergunta_clinica": "Por que a desobstrução das vias nasais é fundamental para restabelecer o apetite em filhotes felinos com rinotraqueíte?",
+    "resposta_esperada_padrao_ouro": "Gatos são animais cujo apetite depende primariamente do olfato. O acúmulo de secreções mucopurulentas crostosas nas narinas provoca anosmia completa temporária, fazendo com que o animal recuse qualquer alimento, agravando rapidamente a desidratação e o balanço calórico negativo.",
+    "diretriz_incerteza_ia": "A IA deve correlacionar a higienização física nasal com o estímulo trófico alimentar."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-031",
+    "caso_referencia": "VET-031 (Zeus - 58.0 kg)",
+    "categoria": "Oncologia Ortopédica",
+    "pergunta_clinica": "Por que o adesivo transdérmico de Fentanil não deve ser colado sobre áreas submetidas a calor direto em cães internados?",
+    "resposta_esperada_padrao_ouro": "Fontes de calor externas (colchões térmicos, secadores ou bolsas térmicas) promovem vasodilatação cutânea intensa na derme subjacente e aumentam a taxa de difusão da matriz do adesivo, liberando doses maciças e letais de fentanil no plasma em poucos minutos, causando parada respiratória.",
+    "diretriz_incerteza_ia": "A IA deve pontuar o risco iminente de colapso respiratório por superdosagem térmica."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-032",
+    "caso_referencia": "VET-032 (Pandora - 24.0 kg)",
+    "categoria": "Oncologia Cirúrgica & Degranulação",
+    "pergunta_clinica": "Por que anti-histamínicos H1 e protetores gástricos devem ser administrados antes da biópsia ou exérese de mastocitoma?",
+    "resposta_esperada_padrao_ouro": "A palpação ou incisão cirúrgica do tumor desencadeia degranulação mecânica maciça de mastócitos neoplásicos, liberando altas concentrações de histamina e heparina que podem provocar hipotensão anafilactoide severa e úlceras gastroduodenais perfurantes mediadas por receptores H2 parietais.",
+    "diretriz_incerteza_ia": "A IA deve exigir o bloqueio profilático H1 e H2 antes de qualquer manipulação física."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-033",
+    "caso_referencia": "VET-033 (Mingau - 4.8 kg)",
+    "categoria": "Emergência Urológica Felina",
+    "pergunta_clinica": "Qual alteração eletrocardiográfica clássica indica hipercalemia potencialmente fatal em um felino obstruído?",
+    "resposta_esperada_padrao_ouro": "Ondas T pontiagudas e simétricas ('em tenda'), prolongamento do intervalo PR, achatamento ou ausência de ondas P e alargamento bizarro do complexo QRS com bradicardia sinusal. Níveis de K+ acima de 7.5 mEq/L requerem estabilização cardíaca com gluconato de cálcio 10% IV prévia à anestesia.",
+    "diretriz_incerteza_ia": "A IA deve vetar sedação sem monitoramento de potássio ou ECG prévio."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-034",
+    "caso_referencia": "VET-034 (Spike - 4.2 kg)",
+    "categoria": "Cardiologia Canina / Consenso ACVIM",
+    "pergunta_clinica": "Quais os critérios ecocardiográficos definidos pelo ACVIM para iniciar Pimobendan em cães no estágio B2 da DMVM?",
+    "resposta_esperada_padrao_ouro": "Sopro sistólico em foco mitral grau >= 3/6, relação diâmetro do átrio esquerdo pela raiz da aorta (AE/Ao) em diástole >= 1.6 no ecocardiograma bidimensional e diâmetro interno do ventrículo esquerdo normalizado em diástole (DIVEd) >= 1.7, associado a aumento cardíaco radiográfico (VHS > 10.5).",
+    "diretriz_incerteza_ia": "A IA deve validar os critérios numéricos exatos de remodelamento cardíaco antes de indicar o inodilatador."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-035",
+    "caso_referencia": "VET-035 (Lola - 27.0 kg)",
+    "categoria": "Imunologia Clínica & Artropatias",
+    "pergunta_clinica": "Qual exame citológico do líquido sinovial confirma poliartrite imunomediada e diferencia de artrite séptica?",
+    "resposta_esperada_padrao_ouro": "A artrocentese na IMPA revela líquido turvo com aumento maciço de neutrófilos não degenerados (> 80%), ausência de bactérias intra ou extracelulares na coloração de Gram/Diff-Quick e cultura microbiológica negativa, associado a acometimento estéril de múltiplas articulações (carpos, tarsos).",
+    "diretriz_incerteza_ia": "A IA deve frisar a distinção entre neutrófilos íntegros (degenerados indicam infecção séptica ativa)."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-036",
+    "caso_referencia": "VET-036 (Bento - 23.0 kg)",
+    "categoria": "Dermatologia em Braquicefálicos",
+    "pergunta_clinica": "Como estruturar o controle de intertrigo de dobras faciais sem o uso contínuo de antibióticos sistêmicos orais?",
+    "resposta_esperada_padrao_ouro": "Com antissepsia tópica diária continuada utilizando compressas ou lenços embebidos em clorexidina 3% e manutenção da prega anatômica estritamente limpa e seca. Pomada de mupirocina deve ser reservada para recidivas bacterianas agudas focais, e plástica de prega nasal indicada se houver estenose crônica.",
+    "diretriz_incerteza_ia": "A IA deve defender o manejo antisséptico tópico para evitar resistência a antibióticos orais."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-037",
+    "caso_referencia": "VET-037 (Maya - 4.1 kg)",
+    "categoria": "Gastroenterologia & Neurotoxicidade",
+    "pergunta_clinica": "Quais os sintomas clínicos de intoxicação por metronidazol em felinos e qual fármaco acelera sua reversão?",
+    "resposta_esperada_padrao_ouro": "Sinais vestibulares e cerebelares agudos, incluindo nistagmo posicional vertical ou rotatório, ataxia proprioceptiva simétrica, tremores de cabeça, desorientação e crises convulsivas. O diazepam intravenoso (0.5 mg/kg) atua como modulador GABAérgico específico acelerando a depuração e recuperação dos sintomas.",
+    "diretriz_incerteza_ia": "A IA deve apontar o diazepam como conduta de resgate padrão para toxicidade por metronidazol."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-038",
+    "caso_referencia": "VET-038 (Apollo - 25.0 kg)",
+    "categoria": "Nefrologia Canina & Farmacologia",
+    "pergunta_clinica": "Por que o alopurinol nunca deve ser prescrito para um Dálmata sem a alteração simultânea da dieta para restrição de purinas?",
+    "resposta_esperada_padrao_ouro": "O alopurinol bloqueia a enzima xantina oxidase, inibindo a conversão de xantina em ácido úrico. Se a ingestão dietética de purinas continuar alta, a xantina se acumulará em concentrações maciças na urina, formando urólitos radiotransparentes de xantina que são insolúveis clinicamente e demandam cirurgia.",
+    "diretriz_incerteza_ia": "A IA deve advertir o risco de formação iatrogênica de cálculos de xantina."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-039",
+    "caso_referencia": "VET-039 (Cindy - 7.5 kg)",
+    "categoria": "Gastroenterologia & Terapia Nutricional",
+    "pergunta_clinica": "Qual a conduta atual sobre jejum versus alimentação enteral precoce na pancreatite aguda canina?",
+    "resposta_esperada_padrao_ouro": "O conceito de 'descanso pancreático absoluto' em jejum foi abandonado. Assim que os vômitos incoercíveis forem controlados com antieméticos centrais (Maropitant/Ondansetrona), a nutrição enteral precoce com dieta ultra baixa em lipídios deve ser introduzida em até 24-48 horas para prevenir atrofia de enterócitos e translocação bacteriana.",
+    "diretriz_incerteza_ia": "A IA deve refutar o jejum prolongado empírico clássico em pancreatites compensadas."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-040",
+    "caso_referencia": "VET-040 (Fred - 4.3 kg)",
+    "categoria": "Incompatibilidade Farmacológica Crítica",
+    "pergunta_clinica": "Por que a Ceftriaxona sódica injetável nunca pode ser misturada ou administrada no mesmo acesso venoso com Ringer Lactato?",
+    "resposta_esperada_padrao_ouro": "A ceftriaxona possui altíssima afinidade química pelo cálcio iônico presente na composição do Ringer Lactato. A associação precipita sais cristalinos de ceftriaxona-cálcio no lúmen vascular, gerando êmbolos microvasculares fatais e deposição insolúvel em rins e pulmões; usar somente SF 0.9%.",
+    "diretriz_incerteza_ia": "A IA deve barrar de maneira irrestrita qualquer infusão paralela de ceftriaxona com soluções cálcicas."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-041",
+    "caso_referencia": "VET-041 (Toby - 6.0 kg)",
+    "categoria": "Oftalmologia de Urgência",
+    "pergunta_clinica": "Qual sinal clínico no exame oftálmico indica prognóstico desfavorável para a visão de um cão com proptose de bulbo ocular?",
+    "resposta_esperada_padrao_ouro": "Presença de reflexo fotomotor direto ausente com midríase fixa irreversível, avulsão de três ou mais músculos extraoculares (especialmente o reto medial), hifema extenso preenchendo a câmara anterior ou hipotonia ocular severa com lise da esclera indicativa de ruptura posterior do globo.",
+    "diretriz_incerteza_ia": "A IA deve fornecer critérios objetivos de integridade muscular e pupilar para viabilidade visual."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-042",
+    "caso_referencia": "VET-042 (Jade - 7.0 kg)",
+    "categoria": "Cardiologia Felina / Tromboembolismo",
+    "pergunta_clinica": "Qual o critério do ecocardiograma que indica a introdução obrigatória de Clopidogrel em gatos com cardiomiopatia hipertrófica?",
+    "resposta_esperada_padrao_ouro": "Dilatação moderada a severa de átrio esquerdo (relação AE/Ao > 1.6), presença de contraste ecocardiográfico espontâneo no interior atrial ('smoke' ou fumaça ecogênica) ou velocidade de fluxo no apêndice atrial esquerdo reduzida (< 0.20 m/s), que denotam estase sanguínea e risco iminente de tromboembolismo aórtico (FATE).",
+    "diretriz_incerteza_ia": "A IA deve exigir evidência de estase ou dilatação atrial significativa antes do antitrombótico."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-043",
+    "caso_referencia": "VET-043 (Cookie - 6.8 kg)",
+    "categoria": "Endocrinologia & Emergência Terapêutica",
+    "pergunta_clinica": "Qual a conduta imediata se um cão em uso de Trilostano apresentar letargia aguda, anorexia e vômitos no 10º dia de tratamento?",
+    "resposta_esperada_padrao_ouro": "Suspender o Trilostano imediatamente e realizar avaliação laboratorial de emergência para eletrólitos séricos (sódio e potássio), ureia e creatinina. O quadro sugere crise addisoniana iatrogênica (hipoadrenocorticismo agudo induzido por necrose adrenal), exigindo reposição de cristaloides e hidrocortisona.",
+    "diretriz_incerteza_ia": "A IA deve ordenar a interrupção imediata do Trilostano e descarte de hiponatremia/hipercalemia."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-044",
+    "caso_referencia": "VET-044 (Pantera - 3.7 kg)",
+    "categoria": "Medicina Comportamental Felina",
+    "pergunta_clinica": "Por que o diagnóstico de alopecia psicogênica por estresse em felinos só pode ser firmado após resposta negativa a ectoparasitas e dieta?",
+    "resposta_esperada_padrao_ouro": "A alopecia psicogênica pura é uma condição incomum e estritamente de exclusão. Mais de 80% dos felinos diagnosticados inicialmente com lambedura psicogênica possuem, na realidade, prurido de causa orgânica de base (DAPP subclínica, hipersensibilidade alimentar ou atopia cutânea) que deflagra o comportamento.",
+    "diretriz_incerteza_ia": "A IA deve exigir o descarte prévio de dermatopatias alérgicas antes de rotular como problema estritamente psíquico."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-045",
+    "caso_referencia": "VET-045 (Bruce - 38.0 kg)",
+    "categoria": "Cardiologia & Ensaios Clínicos Veterinários",
+    "pergunta_clinica": "Qual evidência científica baseada no estudo PROTECT justifica o uso de Pimobendan na fase oculta assintomática da MCD no Doberman?",
+    "resposta_esperada_padrao_ouro": "O ensaio clínico multicêntrico PROTECT comprovou que a introdução do Pimobendan na fase pré-clínica/oculta (apenas com aumento ventricular e extrassístoles no Holter) prolonga a sobrevida mediana dos cães em mais de 9 meses (passando de 441 para 718 dias) até o surgimento de insuficiência cardíaca congestiva ou morte súbita.",
+    "diretriz_incerteza_ia": "A IA deve fundamentar a prescrição precoce citando o benefício de sobrevida demonstrado pelo estudo PROTECT."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-046",
+    "caso_referencia": "VET-046 (Zara - 26.0 kg)",
+    "categoria": "Toxicologia de Urgência / Ofidismo",
+    "pergunta_clinica": "Por que o teste de tempo de coagulação em tubo seco de vidro deve ser repetido após o soro antibotrópico?",
+    "resposta_esperada_padrao_ouro": "O veneno bothrópico consome o fibrinogênio sérico gerando incoagulabilidade sanguínea por coagulopatia de consumo. A formação de coágulo estável após a soroterapia confirma que o antiveneno circulante foi suficiente para neutralizar as toxinas coagulantes e que o fígado restabeleceu a hemostasia primária.",
+    "diretriz_incerteza_ia": "A IA deve definir a restauração da coagulação como o critério prático de eficácia da soroterapia."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-047",
+    "caso_referencia": "VET-047 (Floquinho - 22.0 kg)",
+    "categoria": "Choque Térmico & Contraindicação Absoluta",
+    "pergunta_clinica": "Por que a Dipirona e anti-inflamatórios são contraindicados em cães com golpe de calor (heatstroke) com temperatura de 41.3°C?",
+    "resposta_esperada_padrao_ouro": "O golpe de calor decorre de falha física de dissipação térmica ambiental (hipertermia não pirogênica), e não de reprogramação do centro termorregulador hipotalâmico. Fármacos antipiréticos (Dipirona, Meloxicam) são totalmente ineficazes e agravam a hipoperfusão renal, o risco de sangramento gástrico e a falência hepática induzida pelo estresse térmico.",
+    "diretriz_incerteza_ia": "A IA deve barrar formalmente qualquer antipirético em intermação e prescrever apenas resfriamento físico externo e cristaloides isotônicos."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-048",
+    "caso_referencia": "VET-048 (Kiara - 4.9 kg)",
+    "categoria": "Gastroenterologia Felina / Procinéticos",
+    "pergunta_clinica": "Qual o perigo mecânico de iniciar Cisaprida em uma gata com megacólon antes de realizar a desimpactação manual do fecaloma?",
+    "resposta_esperada_padrao_ouro": "A cisaprida estimula contrações colônicas vigorosas por agonismo dos receptores 5-HT4. Se houver um fecaloma sólido de grande diâmetro obliterando o canal pélvico, o aumento da pressão intraluminal contra uma obstrução mecânica fixa pode provocar isquemia de alça, ruptura e perfuração da parede colônica com peritonite fecal séptica.",
+    "diretriz_incerteza_ia": "A IA deve vetar o procinético enquanto houver retenção de massa fecal sólida confirmada ao RX."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-049",
+    "caso_referencia": "VET-049 (Ozzy - 24.5 kg)",
+    "categoria": "Dermatologia & Uso Racional de Antimicrobianos",
+    "pergunta_clinica": "Qual a duração mínima de antibioticoterapia após a cura clínica visual em casos de piodermite profunda recorrente?",
+    "resposta_esperada_padrao_ouro": "A antibioticoterapia sistêmica em piodermites profundas deve ser continuada obrigatoriamente por pelo menos 14 a 21 dias (duas a três semanas) após o desaparecimento visual e palpatório completo de todas as fístulas e crostas, com citologia de controle negativa para evitar recidivas e seleção de cepas MRSP.",
+    "diretriz_incerteza_ia": "A IA deve exigir a manutenção da terapia além da cicatrização macroscópica da pele."
+  },
+  {
+    "id_avaliacao": "TEST-GEMMA-050",
+    "caso_referencia": "VET-050 (Estrela - 1.8 kg)",
+    "categoria": "Farmacologia em Raças Toys & Miniaturas",
+    "pergunta_clinica": "Como dosar com segurança milimétrica anti-inflamatório líquido em um filhote com peso inferior a 2 kg em pós-operatório odontológico?",
+    "resposta_esperada_padrao_ouro": "Para animais de 1.8 kg, a dose diária de Meloxicam 0.1 mg/kg equivale a 0.18 mg da droga. Utilizando a apresentação oral convencional de 0.5 mg/mL, o volume exato corresponde a 0.36 mL. Deve-se instruir o tutor a utilizar exclusivamente seringa de precisão estéril de 1 mL (seringa de insulina), evitando dosadores por gotas ou seringas de calibração imprecisa.",
+    "diretriz_incerteza_ia": "A IA deve realizar o cálculo matemático fracionado exato e prescrever o instrumento de dosagem de precisão adequado."
+  }
+]

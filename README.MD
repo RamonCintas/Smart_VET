@@ -9,12 +9,13 @@ Cada etapa do projeto está organizada em arquivos separados para facilitar a na
 
 - [Fase 1](./FASE1.MD) — Disponível
 - [Fase 2](./FASE2.MD) — Disponível
+- [Fase 3](./FASE3.MD) — LangChain e contexto clínico estruturado
 
 # 🖥️ Endpoints
 
 * 🌐 [Smart VET Streamlit Render](https://techchallenge-smartvet-streamlit-oficial.onrender.com)
-* 🌐 [Smart VET FastAPI Render](https://techchallenge-smartvet-fastapi-oficial.onrender.com/docs) 
-> obs: Para testar o fastapi na rota /docs via Swagger use a API KEY (12092002)
+* 🌐 [Smart VET FastAPI Render](https://techchallenge-smartvet-fastapi-oficial.onrender.com/docs)
+> Para testar rotas protegidas no Swagger, configure uma API key no ambiente e envie-a no header `X-API-Key`. Nunca publique o valor da chave no repositório.
 
 ---
 

@@ -60,6 +60,13 @@ def test_pii_mascarada_na_interpretacao_e_no_log(seguranca):
     assert "98765" not in log.caminho.read_text(encoding="utf-8")
 
 
+def test_paciente_id_pseudonimizado_no_log(seguranca):
+    seg, log, _ = seguranca
+    rid, _ = seg.iniciar("/predict/condition", {"animal_name": "dog"}, paciente_id="VET-001")
+    registro = log.eventos(rid)[0]
+    assert registro["dados"]["paciente_id"] and "VET-001" not in log.caminho.read_text(encoding="utf-8")
+
+
 def test_sem_interpretacao_e_erro_auditado(seguranca):
     seg, log, _ = seguranca
     entrada = {"filename": "gato.jpg", **resumo_imagem(b"bytes")}

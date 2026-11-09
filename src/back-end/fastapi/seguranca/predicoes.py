@@ -68,9 +68,11 @@ class SegurancaPredicoes:
         self.auditoria = auditoria
         self.fila = fila
 
-    def iniciar(self, endpoint: str, entrada: dict) -> tuple[str, float]:
+    def iniciar(self, endpoint: str, entrada: dict, paciente_id: str | None = None) -> tuple[str, float]:
+        """``paciente_id`` vai separado da entrada para ser pseudonimizado pelo AuditLogger."""
         request_id = novo_request_id()
-        self.auditoria.registrar("requisicao_recebida", request_id, endpoint=endpoint, entrada=entrada)
+        self.auditoria.registrar("requisicao_recebida", request_id, endpoint=endpoint, entrada=entrada,
+                                 paciente_id=paciente_id)
         return request_id, time.perf_counter()
 
     def erro(self, request_id: str, exc: Exception) -> None:

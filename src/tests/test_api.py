@@ -52,7 +52,7 @@ if not TEST_API_KEY:
         f"Arquivo .env procurado:\n{ENV_FILE}\n"
         "\n"
         "Adicione ao .env:\n"
-        "TEST_API_KEY=12092002\n"
+        "TEST_API_KEY=SUA_API_KEY_DE_TESTE\n"
         "============================================================\n"
     )
 
@@ -112,6 +112,7 @@ def condition_payload() -> dict[str, str]:
     """
 
     return {
+        "patient_id": "VET-001",
         "animal_name": "dog",
         "symptoms1": "fever",
         "symptoms2": "vomiting",
@@ -207,6 +208,8 @@ def test_health_is_public_and_returns_security_headers(
 
     assert isinstance(data, dict)
     assert data.get("status") == "online"
+    assert data["clinical_data"]["patient_count"] == 50
+    assert data["clinical_data"]["medication_count"] == 37
 
     assert response.headers.get(
         "x-content-type-options"
@@ -217,6 +220,32 @@ def test_health_is_public_and_returns_security_headers(
     ) == "DENY"
 
     print("[OK] Health check passou.")
+
+
+def test_patients_endpoint_returns_minimal_records(api_client):
+    response = api_client.get(
+        "/patients",
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 200
+    patients = response.json()
+    assert len(patients) == 50
+    assert set(patients[0]) == {"id", "name", "species", "breed"}
+
+
+def test_unknown_patient_is_rejected(api_client):
+    payload = condition_payload()
+    payload["patient_id"] = "VET-999"
+
+    response = api_client.post(
+        "/predict/condition",
+        json=payload,
+        headers=auth_headers(),
+    )
+
+    assert response.status_code == 404
+    assert "VET-999" in response.json()["detail"]
 
 
 # ============================================================
@@ -368,6 +397,7 @@ def test_condition_diagnosis(api_client):
     )
 
     assert data["prediction_label"] is not None
+    assert data["clinical_context"]["patient_id"] == "VET-001"
 
     print()
     print("[OK] DIAGNOSTICO POR SINTOMAS PASSOU.")
@@ -411,6 +441,7 @@ def test_invalid_image_is_rejected(
                 "image/jpeg",
             )
         },
+        data={"patient_id": "VET-001"},
         headers=auth_headers(),
     )
 
@@ -517,6 +548,7 @@ def test_image_diagnosis(
                 "image/jpeg",
             )
         },
+        data={"patient_id": "VET-001"},
         headers=auth_headers(),
     )
 
@@ -642,6 +674,8 @@ def test_image_diagnosis(
             f"  Interpretation     : "
             f"{data['interpretation']}"
         )
+
+    assert data["clinical_context"]["patient_id"] == "VET-001"
 
     print()
     print("[OK] DIAGNOSTICO POR IMAGEM PASSOU.")

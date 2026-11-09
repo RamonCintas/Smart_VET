@@ -64,8 +64,14 @@ LLM_JSON_MODE=true
 LLM_FALLBACK_1_PROVIDER=huggingface
 LLM_FALLBACK_1_API_KEY=
 LLM_FALLBACK_1_BASE_URL=https://router.huggingface.co/v1
-LLM_FALLBACK_1_MODEL=Qwen/Qwen2.5-7B-Instruct
+LLM_FALLBACK_1_MODEL=Qwen/Qwen3-4B-Instruct-2507
 LLM_FALLBACK_1_JSON_MODE=true
 
 LLM_TIMEOUT_SECONDS=45
 LLM_TEMPERATURE=0.2
+LLM_MAX_RETRIES=2
+LLM_RETRY_BACKOFF_SECONDS=1.0
+
+# Synthetic bundled records may be sent by default. Disable for real clinical data.
+ALLOW_REMOTE_CLINICAL_CONTEXT=true
+CLINICAL_DATA_RELOAD=true

@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, File, UploadFile, HTTPException
+from fastapi import Depends, FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -13,15 +13,15 @@ import io
 import json
 import os
 import pickle
-import re
 import traceback
 import logging
 import numpy as np
 import pandas as pd
-import requests
 import tensorflow as tf
 
 from security import require_api_key, require_api_key_in_production, validate_image_bytes
+from clinical_repository import ClinicalRepository, PatientNotFoundError
+from langchain_service import LLMInterpreter as LangChainInterpreter
 from seguranca import AuditLogger, FilaRevisaoHumana
 from seguranca.api import criar_router
 from seguranca.predicoes import SegurancaPredicoes, resumo_imagem
@@ -74,7 +74,7 @@ LLM_PROVIDER_DEFAULTS = {
     },
     "huggingface": {
         "base_url": "https://router.huggingface.co/v1",
-        "model": "Qwen/Qwen2.5-7B-Instruct"
+        "model": "Qwen/Qwen3-4B-Instruct-2507"
     }
 }
 
@@ -121,6 +121,12 @@ class Settings(BaseSettings):
     llm_fallback_1_json_mode: bool = True
     llm_timeout_seconds: int = 45
     llm_temperature: float = 0.2
+    llm_max_retries: int = 2
+    llm_retry_backoff_seconds: float = 1.0
+    allow_remote_clinical_context: bool = True
+
+    clinical_data_dir: str = str(Path(__file__).resolve().parent / "data")
+    clinical_data_reload: bool = True
 
     allowed_origins: str = "http://localhost:8501,http://localhost:8000"
 
@@ -222,6 +228,7 @@ elif settings.api_env.lower() == "prod":
 # =========================================================
 
 class ConditionPredictionRequest(BaseModel):
+    patient_id: Optional[str] = Field(default=None, examples=["VET-001"])
     animal_name: str = Field(examples=["dog"])
     symptoms1: str = Field(examples=["fever"])
     symptoms2: str = Field(examples=["vomiting"])
@@ -250,12 +257,35 @@ class HealthTabular(BaseModel):
     dataset_rows: int
 
 
+class HealthClinicalData(BaseModel):
+    patient_count: int
+    medication_count: int
+    data_version: str
+    loaded_at: str
+
+
 class HealthResponse(BaseModel):
     status: str
     environment: str
     models: HealthModels
     llm: HealthLLM
     tabular: HealthTabular
+    clinical_data: HealthClinicalData
+
+
+class ClinicalContextMetadata(BaseModel):
+    patient_id: str
+    patient_name: str
+    protocol_version: str
+    data_version: str
+    matched_medication_ids: List[str]
+
+
+class PatientSummary(BaseModel):
+    id: str
+    name: str
+    species: str
+    breed: str
 
 
 class DiagnosticInterpretation(BaseModel):
@@ -285,6 +315,7 @@ class ConditionPredictionResponse(BaseModel):
     probability_yes: Optional[float]
     input_used: Dict
     interpretation: Optional[DiagnosticInterpretation] = None
+    clinical_context: Optional[ClinicalContextMetadata] = None
     safety: Optional[SafetyReport] = None
 
 
@@ -301,6 +332,7 @@ class ImagePredictionResponse(BaseModel):
     dog_breeds: List[PredictionItem] = []
     skin_diseases: List[PredictionItem] = []
     interpretation: Optional[DiagnosticInterpretation] = None
+    clinical_context: Optional[ClinicalContextMetadata] = None
     safety: Optional[SafetyReport] = None
 
 
@@ -310,7 +342,7 @@ class ImagePredictionResponse(BaseModel):
 
 app = FastAPI(
     title="Smart VET API",
-    version="3.0.0"
+    version="4.0.0"
 )
 
 app.add_middleware(
@@ -375,293 +407,6 @@ def build_features(payload):
     return pd.DataFrame([row])
 
 
-def safe_float(value):
-    if value is None:
-        return None
-
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-class LLMInterpreter:
-    def __init__(self, settings):
-        self.settings = settings
-
-    def interpret_condition(self, prediction):
-        prompt_payload = {
-            "tipo_resultado": "modelo_tabular_condicao_clinica",
-            "entrada_normalizada": prediction.get("input_used", {}),
-            "classe_predita": prediction.get("prediction_label"),
-            "predicao_binaria": prediction.get("prediction_binary"),
-            "probabilidade_risco": prediction.get("probability_yes")
-        }
-
-        return self._interpret(
-            prompt_payload=prompt_payload,
-            fallback=self._fallback_condition(prediction)
-        )
-
-    def interpret_image(self, prediction):
-        prompt_payload = {
-            "tipo_resultado": "modelo_visao_imagem_canina",
-            "racas_provaveis": prediction.get("dog_breeds", [])[:5],
-            "condicoes_dermatologicas_provaveis": prediction.get("skin_diseases", [])[:5],
-            "mensagem_processamento": prediction.get("message")
-        }
-
-        return self._interpret(
-            prompt_payload=prompt_payload,
-            fallback=self._fallback_image(prediction)
-        )
-
-    def _interpret(self, prompt_payload, fallback):
-        providers = self.settings.llm_provider_configs
-
-        if not providers:
-            return fallback
-
-        for provider_config in providers:
-            try:
-                interpreted = self._call_provider(prompt_payload, provider_config)
-
-                return self._normalize_interpretation(
-                    interpreted,
-                    generated_by="llm",
-                    provider=provider_config.provider,
-                    model_used=provider_config.model
-                )
-
-            except Exception:
-                logger.warning(
-                    "LLM interpretation failed for provider '%s'. Trying next provider.",
-                    provider_config.provider
-                )
-                logger.warning(traceback.format_exc())
-
-        logger.warning("All LLM providers failed. Using rule-based fallback.")
-        return fallback
-
-    def _call_provider(self, prompt_payload, provider_config):
-        attempts = [provider_config.json_mode]
-
-        if provider_config.json_mode:
-            attempts.append(False)
-
-        last_error = None
-
-        for use_json_mode in attempts:
-            try:
-                content = self._request_chat_completion(
-                    prompt_payload=prompt_payload,
-                    provider_config=provider_config,
-                    use_json_mode=use_json_mode
-                )
-                return self._parse_json_content(content)
-
-            except Exception as exc:
-                last_error = exc
-
-                if use_json_mode:
-                    logger.warning(
-                        "JSON mode failed for provider '%s'. Retrying without response_format.",
-                        provider_config.provider
-                    )
-
-        raise last_error or RuntimeError("LLM provider call failed for unknown reason")
-
-    def _request_chat_completion(self, prompt_payload, provider_config, use_json_mode):
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        if provider_config.api_key:
-            headers["Authorization"] = f"Bearer {provider_config.api_key}"
-
-        payload = {
-            "model": provider_config.model,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": (
-                        "Voce e um assistente de interpretacao para triagem veterinaria. "
-                        "Explique resultados de modelos de machine learning em portugues do Brasil, "
-                        "com linguagem clara para profissionais de saude veterinaria. "
-                        "Nao afirme diagnostico definitivo, nao prescreva tratamento e recomende "
-                        "validacao clinica quando houver risco. "
-                        "Responda somente JSON valido, sem markdown, com as chaves: summary, risk_level, "
-                        "explanation, actionable_insights, limitations."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        "Interprete os dados abaixo e transforme os numeros em insights acionaveis. "
-                        "Use no maximo 4 itens em actionable_insights e 3 em limitations.\n\n"
-                        f"{json.dumps(prompt_payload, ensure_ascii=False)}"
-                    )
-                }
-            ]
-        }
-
-        if provider_config.provider != "gemini":
-            payload["temperature"] = self.settings.llm_temperature
-
-        if use_json_mode:
-            payload["response_format"] = {"type": "json_object"}
-
-        response = requests.post(
-            f"{provider_config.base_url.rstrip('/')}/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=self.settings.llm_timeout_seconds
-        )
-
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
-
-    def _parse_json_content(self, content):
-        if isinstance(content, dict):
-            return content
-
-        if not content:
-            raise ValueError("Empty LLM response content")
-
-        text = str(content).strip()
-        candidates = [text]
-
-        markdown_match = re.search(
-            r"```(?:json)?\s*(.*?)```",
-            text,
-            flags=re.IGNORECASE | re.DOTALL
-        )
-
-        if markdown_match:
-            candidates.append(markdown_match.group(1).strip())
-
-        first_brace = text.find("{")
-        last_brace = text.rfind("}")
-
-        if first_brace != -1 and last_brace != -1 and first_brace < last_brace:
-            candidates.append(text[first_brace:last_brace + 1])
-
-        last_error = None
-
-        for candidate in candidates:
-            try:
-                parsed = json.loads(candidate)
-                if isinstance(parsed, dict):
-                    return parsed
-            except json.JSONDecodeError as exc:
-                last_error = exc
-
-        raise ValueError(f"Could not parse LLM response as JSON: {last_error}")
-
-    def _normalize_interpretation(self, interpretation, generated_by, provider, model_used):
-        return {
-            "summary": str(interpretation.get("summary", "")).strip(),
-            "risk_level": str(interpretation.get("risk_level", "indeterminado")).strip(),
-            "explanation": str(interpretation.get("explanation", "")).strip(),
-            "actionable_insights": self._as_list(interpretation.get("actionable_insights")),
-            "limitations": self._as_list(interpretation.get("limitations")),
-            "model_used": model_used,
-            "provider": provider,
-            "generated_by": generated_by
-        }
-
-    def _as_list(self, value):
-        if isinstance(value, list):
-            return [str(item).strip() for item in value if str(item).strip()]
-
-        if value:
-            return [str(value).strip()]
-
-        return []
-
-    def _fallback_condition(self, prediction):
-        probability = safe_float(prediction.get("probability_yes"))
-        is_critical = prediction.get("prediction_binary") == 1
-
-        if probability is None:
-            confidence_text = "sem probabilidade calibrada disponivel"
-        else:
-            confidence_text = f"probabilidade estimada de risco de {probability * 100:.2f}%"
-
-        risk_level = "alto" if is_critical else "baixo"
-        summary = (
-            "O modelo tabular indicou possivel estado critico."
-            if is_critical
-            else "O modelo tabular nao indicou sinais criticos no conjunto informado."
-        )
-
-        return {
-            "summary": summary,
-            "risk_level": risk_level,
-            "explanation": (
-                f"A classificacao retornada foi '{prediction.get('prediction_label')}', com {confidence_text}. "
-                "A leitura deve ser usada como apoio de triagem e nao como diagnostico definitivo."
-            ),
-            "actionable_insights": [
-                "Revisar os sintomas informados e confirmar se representam o quadro atual do animal.",
-                "Priorizar avaliacao veterinaria se houver piora, dor intensa, apatia persistente ou desidratacao.",
-                "Comparar o resultado com historico clinico, exame fisico e sinais vitais."
-            ],
-            "limitations": [
-                "O modelo usa apenas especie e cinco sintomas normalizados.",
-                "A probabilidade depende da distribuicao do dataset usado no treinamento.",
-                "A interpretacao automatica nao substitui avaliacao veterinaria."
-            ],
-            "model_used": "rule-based-fallback",
-            "provider": "rules",
-            "generated_by": "rules"
-        }
-
-    def _fallback_image(self, prediction):
-        skin_diseases = prediction.get("skin_diseases", [])
-        best_skin = skin_diseases[0] if skin_diseases else None
-        best_label = best_skin.get("label") if best_skin else "nao identificado"
-        best_confidence = safe_float(best_skin.get("confidence")) if best_skin else None
-
-        if best_label == "healthy":
-            risk_level = "baixo"
-            summary = "O modelo de imagem apontou pele aparentemente saudavel entre as classes avaliadas."
-        elif best_skin:
-            risk_level = "moderado"
-            summary = f"O modelo de imagem sinalizou possivel condicao dermatologica: {best_label}."
-        else:
-            risk_level = "indeterminado"
-            summary = "O modelo de imagem nao retornou condicao dermatologica suficiente para interpretacao."
-
-        confidence_text = (
-            f" com confianca de {best_confidence * 100:.2f}%"
-            if best_confidence is not None
-            else ""
-        )
-
-        return {
-            "summary": summary,
-            "risk_level": risk_level,
-            "explanation": (
-                f"A principal classe dermatologica retornada foi '{best_label}'{confidence_text}. "
-                "Esse resultado deve orientar a triagem visual e precisa ser confirmado por exame clinico."
-            ),
-            "actionable_insights": [
-                "Verificar qualidade da imagem, iluminacao e foco antes de tomar decisoes.",
-                "Comparar a area da pele com sinais clinicos como coceira, descamacao, feridas ou secrecao.",
-                "Encaminhar para avaliacao veterinaria se a lesao evoluir ou houver desconforto."
-            ],
-            "limitations": [
-                "O modelo avalia apenas classes presentes no treinamento.",
-                "Imagem, angulo e iluminacao podem alterar a confianca.",
-                "A interpretacao automatica nao substitui exame dermatologico veterinario."
-            ],
-            "model_used": "rule-based-fallback",
-            "provider": "rules",
-            "generated_by": "rules"
-        }
-
-
 # =========================================================
 # MODEL SERVICE
 # =========================================================
@@ -674,7 +419,14 @@ class ModelService:
         self.dog_detector = None
         self.labels = None
         self.dataset_map = None
-        self.llm_interpreter = LLMInterpreter(settings)
+        self.clinical_repository = ClinicalRepository(
+            settings.clinical_data_dir,
+            reload_on_change=settings.clinical_data_reload
+        )
+        self.llm_interpreter = LangChainInterpreter(
+            settings,
+            self.clinical_repository
+        )
         self.revisions = {}
 
     def download(self, key, **kwargs):
@@ -683,7 +435,35 @@ class ModelService:
         self.revisions[key] = Path(path).parent.name[:12]
         return path
 
-    def condition_sources(self):
+    def clinical_sources(self, result):
+        context = result.get("clinical_context")
+        if not context:
+            return []
+
+        # O ID do paciente nao entra nas fontes: na auditoria ele vai pseudonimizado em paciente_id.
+        return [
+            {
+                "id": "data/pacientes_clinicos.json",
+                "titulo": "Prontuario do paciente (base clinica estruturada)",
+                "tipo": "prontuario",
+                "versao": context["data_version"]
+            },
+            {
+                "id": "protocolo-do-prontuario",
+                "titulo": "Protocolo clinico registrado no prontuario",
+                "tipo": "protocolo",
+                "versao": context["protocol_version"]
+            },
+            {
+                "id": "data/medicamentos.xlsx",
+                "titulo": "Base de medicamentos relacionados",
+                "tipo": "medicamentos",
+                "versao": context["data_version"],
+                "itens": context["matched_medication_ids"]
+            }
+        ]
+
+    def condition_sources(self, result):
         return [
             {
                 "id": f"{settings.hf_model_repo}/{settings.hf_model_filename}",
@@ -696,7 +476,8 @@ class ModelService:
                 "titulo": "Dataset de sintomas e condicoes clinicas",
                 "tipo": "dataset",
                 "versao": self.revisions.get("tabular_dataset")
-            }
+            },
+            *self.clinical_sources(result)
         ]
 
     def image_sources(self, result):
@@ -718,11 +499,15 @@ class ModelService:
                 "tipo": "modelo",
                 "versao": self.revisions.get("image_model"),
                 "datasets_de_treino": datasets
-            }
+            },
+            *self.clinical_sources(result)
         ]
 
     def preload(self):
         try:
+            logger.info("Loading structured clinical data...")
+            self.clinical_repository.load(force=True)
+
             logger.info("Loading dataset...")
             self.tabular_dataset = self.load_tabular_dataset()
     
@@ -821,6 +606,8 @@ class ModelService:
     def predict_condition(self, payload):
         assert self.tabular_model is not None, "Tabular model not loaded"
 
+        self.llm_interpreter.validate_patient(payload.patient_id)
+
         features = build_features(payload)
 
         prediction = int(self.tabular_model.predict(features)[0])
@@ -838,7 +625,12 @@ class ModelService:
             "input_used": features.iloc[0].to_dict()
         }
 
-        result["interpretation"] = self.llm_interpreter.interpret_condition(result)
+        interpretation, clinical_context = self.llm_interpreter.interpret_condition(
+            result,
+            patient_id=payload.patient_id
+        )
+        result["interpretation"] = interpretation
+        result["clinical_context"] = clinical_context
 
         return result
     
@@ -879,10 +671,12 @@ class ModelService:
 
         return False
 
-    def predict_image(self, image_bytes):
+    def predict_image(self, image_bytes, patient_id=None):
         assert self.image_model is not None, "Image model not loaded"
         assert self.labels is not None, "Labels not loaded"
         assert self.dataset_map is not None, "Dataset map not loaded"
+
+        self.llm_interpreter.validate_patient(patient_id)
 
         if not self.validate_dog_image(image_bytes):
             return {
@@ -890,7 +684,8 @@ class ModelService:
                 "message": "Apenas imagens de cachorros são permitidas.",
                 "dog_breeds": [],
                 "skin_diseases": [],
-                "interpretation": None
+                "interpretation": None,
+                "clinical_context": None
             }
         with Image.open(io.BytesIO(image_bytes)) as img:
             img = img.convert("RGB")
@@ -934,7 +729,12 @@ class ModelService:
             "skin_diseases": skin_predictions[:5]
         }
 
-        result["interpretation"] = self.llm_interpreter.interpret_image(result)
+        interpretation, clinical_context = self.llm_interpreter.interpret_image(
+            result,
+            patient_id=patient_id
+        )
+        result["interpretation"] = interpretation
+        result["clinical_context"] = clinical_context
 
         return result
 
@@ -1008,6 +808,7 @@ def health():
     assert df is not None, "Tabular dataset not loaded"
 
     llm_configs = settings.llm_provider_configs
+    clinical_data = model_service.clinical_repository.metadata()
 
     animals = sorted(
         df["AnimalName"].dropna().astype(str).str.lower().unique().tolist()
@@ -1041,8 +842,18 @@ def health():
             "animal_count": len(animals),
             "symptom_count": len(symptoms),
             "dataset_rows": len(df)
-        }
+        },
+        "clinical_data": clinical_data
     }
+
+
+@app.get(
+    "/patients",
+    response_model=List[PatientSummary],
+    dependencies=[Depends(require_api_key)]
+)
+def list_patients():
+    return model_service.clinical_repository.list_patients()
 
 
 @app.post(
@@ -1051,17 +862,22 @@ def health():
     dependencies=[Depends(require_api_key)]
 )
 def predict_condition(payload: ConditionPredictionRequest):
-    entrada = payload.model_dump()
-    request_id, inicio = seguranca_predicoes.iniciar("/predict/condition", entrada)
+    entrada = payload.model_dump(exclude={"patient_id"})
+    request_id, inicio = seguranca_predicoes.iniciar(
+        "/predict/condition", entrada, paciente_id=payload.patient_id
+    )
 
     try:
         result = model_service.predict_condition(payload)
+    except PatientNotFoundError as exc:
+        seguranca_predicoes.erro(request_id, exc)
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as e:
         seguranca_predicoes.erro(request_id, e)
         raise
 
     return seguranca_predicoes.concluir(
-        request_id, inicio, entrada, result, model_service.condition_sources()
+        request_id, inicio, entrada, result, model_service.condition_sources(result)
     )
 
 
@@ -1070,17 +886,26 @@ def predict_condition(payload: ConditionPredictionRequest):
     response_model=ImagePredictionResponse,
     dependencies=[Depends(require_api_key)]
 )
-async def predict_image(file: UploadFile = File(...)):
+async def predict_image(
+    file: UploadFile = File(...),
+    patient_id: Optional[str] = Form(default=None)
+):
     image_bytes = await file.read()
     entrada = {"filename": file.filename, **resumo_imagem(image_bytes)}
-    request_id, inicio = seguranca_predicoes.iniciar("/predict/image", entrada)
+    request_id, inicio = seguranca_predicoes.iniciar(
+        "/predict/image", entrada, paciente_id=patient_id
+    )
 
     try:
         validate_image_bytes(image_bytes)
-        result = model_service.predict_image(image_bytes)
+        result = model_service.predict_image(image_bytes, patient_id=patient_id)
         return seguranca_predicoes.concluir(
             request_id, inicio, entrada, result, model_service.image_sources(result)
         )
+
+    except PatientNotFoundError as exc:
+        seguranca_predicoes.erro(request_id, exc)
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     except HTTPException as e:
         seguranca_predicoes.erro(request_id, e)

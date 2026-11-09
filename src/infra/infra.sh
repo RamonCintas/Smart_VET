@@ -343,6 +343,10 @@ export TF_VAR_llm_fallback_1_json_mode="${LLM_FALLBACK_1_JSON_MODE:-}"
 
 export TF_VAR_llm_timeout_seconds="${LLM_TIMEOUT_SECONDS:-}"
 export TF_VAR_llm_temperature="${LLM_TEMPERATURE:-}"
+export TF_VAR_llm_max_retries="${LLM_MAX_RETRIES:-2}"
+export TF_VAR_llm_retry_backoff_seconds="${LLM_RETRY_BACKOFF_SECONDS:-1.0}"
+export TF_VAR_allow_remote_clinical_context="${ALLOW_REMOTE_CLINICAL_CONTEXT:-true}"
+export TF_VAR_clinical_data_reload="${CLINICAL_DATA_RELOAD:-true}"
 
 ok "Variáveis Terraform configuradas."
 echo
