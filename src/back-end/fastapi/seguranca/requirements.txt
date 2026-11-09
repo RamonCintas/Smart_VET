@@ -1,0 +1,8 @@
+# Dependências da camada de segurança (Fase 3).
+# O núcleo (guardrails, auditoria, explicabilidade, revisão humana) usa só a biblioteca padrão;
+# os pacotes abaixo são necessários para o grafo LangGraph, as rotas FastAPI e os testes.
+langchain-core>=1.0,<2
+langgraph>=1.0,<2
+fastapi>=0.115
+httpx>=0.28
+pytest>=8

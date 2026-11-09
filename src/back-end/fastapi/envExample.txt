@@ -15,6 +15,15 @@ API_KEY=
 MAX_UPLOAD_BYTES=5242880
 
 # -------------------------
+# AUDITORIA E VALIDACAO HUMANA (Fase 3 - pacote seguranca/)
+# AUDIT_SALT: chave do HMAC que pseudonimiza IDs no log. Use um valor longo e aleatorio em producao.
+# Com API_ENV=Prod, as rotas /seguranca/* exigem API_KEY configurada.
+# -------------------------
+AUDIT_SALT=
+AUDIT_LOG_PATH=logs/auditoria.jsonl
+REVIEW_QUEUE_PATH=logs/fila_revisao.json
+
+# -------------------------
 # API CONFIG Cloud Render
 # API_ENV=Prod
 # ALLOWED_ORIGINS=https://smart-vet-streamlit.onrender.com

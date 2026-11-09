@@ -4,12 +4,14 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import List, Dict, Optional
 from PIL import Image
 from huggingface_hub import hf_hub_download
 
 import io
 import json
+import os
 import pickle
 import re
 import traceback
@@ -19,7 +21,10 @@ import pandas as pd
 import requests
 import tensorflow as tf
 
-from security import require_api_key, validate_image_bytes
+from security import require_api_key, require_api_key_in_production, validate_image_bytes
+from seguranca import AuditLogger, FilaRevisaoHumana
+from seguranca.api import criar_router
+from seguranca.predicoes import SegurancaPredicoes, resumo_imagem
 
 from keras.applications.mobilenet_v2 import decode_predictions
 from keras.applications import MobileNetV2
@@ -122,6 +127,10 @@ class Settings(BaseSettings):
     api_key: str = ""
     max_upload_bytes: int = 5 * 1024 * 1024
 
+    audit_log_path: str = "logs/auditoria.jsonl"
+    review_queue_path: str = "logs/fila_revisao.json"
+    audit_salt: Optional[str] = None
+
     @property
     def cors_origins(self):
         return [x.strip() for x in self.allowed_origins.split(",") if x.strip()]
@@ -201,6 +210,12 @@ def get_settings():
 
 settings = get_settings()
 
+# seguranca.pii le o salt da pseudonimizacao de os.environ; o .env so chega ao Settings.
+if settings.audit_salt:
+    os.environ.setdefault("AUDIT_SALT", settings.audit_salt)
+elif settings.api_env.lower() == "prod":
+    logger.warning("AUDIT_SALT not configured. Audit pseudonyms use the default salt.")
+
 
 # =========================================================
 # SCHEMAS
@@ -254,12 +269,23 @@ class DiagnosticInterpretation(BaseModel):
     generated_by: str
 
 
+class SafetyReport(BaseModel):
+    request_id: str
+    status: str
+    motivos: List[str] = []
+    alertas: List[str] = []
+    revisao_id: Optional[str] = None
+    aviso: str
+    fontes: List[Dict] = []
+
+
 class ConditionPredictionResponse(BaseModel):
     prediction_binary: int
     prediction_label: str
     probability_yes: Optional[float]
     input_used: Dict
     interpretation: Optional[DiagnosticInterpretation] = None
+    safety: Optional[SafetyReport] = None
 
 
 class PredictionItem(BaseModel):
@@ -275,6 +301,7 @@ class ImagePredictionResponse(BaseModel):
     dog_breeds: List[PredictionItem] = []
     skin_diseases: List[PredictionItem] = []
     interpretation: Optional[DiagnosticInterpretation] = None
+    safety: Optional[SafetyReport] = None
 
 
 # =========================================================
@@ -648,6 +675,51 @@ class ModelService:
         self.labels = None
         self.dataset_map = None
         self.llm_interpreter = LLMInterpreter(settings)
+        self.revisions = {}
+
+    def download(self, key, **kwargs):
+        path = hf_hub_download(**kwargs)
+        # O cache do Hugging Face guarda o arquivo em snapshots/<commit>/, que identifica a versao usada.
+        self.revisions[key] = Path(path).parent.name[:12]
+        return path
+
+    def condition_sources(self):
+        return [
+            {
+                "id": f"{settings.hf_model_repo}/{settings.hf_model_filename}",
+                "titulo": "Modelo tabular de condicao clinica",
+                "tipo": "modelo",
+                "versao": self.revisions.get("tabular_model")
+            },
+            {
+                "id": f"{settings.hf_data_repo}/{settings.hf_data_filename}",
+                "titulo": "Dataset de sintomas e condicoes clinicas",
+                "tipo": "dataset",
+                "versao": self.revisions.get("tabular_dataset")
+            }
+        ]
+
+    def image_sources(self, result):
+        datasets = sorted({
+            item["dataset"]
+            for item in result.get("dog_breeds", []) + result.get("skin_diseases", [])
+        })
+
+        return [
+            {
+                "id": "keras/MobileNetV2-imagenet",
+                "titulo": "Detector de cachorro (validacao da imagem)",
+                "tipo": "modelo",
+                "versao": None
+            },
+            {
+                "id": f"{settings.hf_image_repo}/{settings.hf_image_filename}",
+                "titulo": "Modelo de visao computacional (racas e pele)",
+                "tipo": "modelo",
+                "versao": self.revisions.get("image_model"),
+                "datasets_de_treino": datasets
+            }
+        ]
 
     def preload(self):
         try:
@@ -680,7 +752,8 @@ class ModelService:
             raise
 
     def load_tabular_dataset(self):
-        path = hf_hub_download(
+        path = self.download(
+            "tabular_dataset",
             repo_id=settings.hf_data_repo,
             repo_type="dataset",
             filename=settings.hf_data_filename
@@ -699,7 +772,8 @@ class ModelService:
         return df.rename(columns=rename_map)
 
     def load_tabular_model(self):
-        path = hf_hub_download(
+        path = self.download(
+            "tabular_model",
             repo_id=settings.hf_model_repo,
             filename=settings.hf_model_filename
         )
@@ -714,7 +788,8 @@ class ModelService:
         )
 
     def load_image_model(self):
-        path = hf_hub_download(
+        path = self.download(
+            "image_model",
             repo_id=settings.hf_image_repo,
             filename=settings.hf_image_filename
         )
@@ -868,6 +943,53 @@ model_service = ModelService()
 
 
 # =========================================================
+# SEGURANCA E VALIDACAO (FASE 3)
+# =========================================================
+
+auditoria = AuditLogger(
+    settings.audit_log_path,
+    versao_modelo=f"smart-vet-api-{app.version}"
+)
+fila_revisao = FilaRevisaoHumana(settings.review_queue_path, auditoria=auditoria)
+seguranca_predicoes = SegurancaPredicoes(auditoria, fila_revisao)
+
+
+def build_secure_assistant():
+    """Monta o grafo do assistente quando o modulo `assistente` (Fase 3) existir.
+
+    O modulo deve expor `criar_llm(settings)` (chat model LangChain) e
+    `criar_retriever(settings)` (retriever LangChain com os protocolos clinicos).
+    Sem ele, a rota /seguranca/assistente/perguntar simplesmente nao e criada.
+    """
+    try:
+        import assistente
+    except ModuleNotFoundError as exc:
+        if exc.name != "assistente":
+            raise
+        return None
+
+    from seguranca import construir_grafo_seguro
+
+    logger.info("Assistente detectado. Habilitando /seguranca/assistente/perguntar")
+    return construir_grafo_seguro(
+        assistente.criar_llm(settings),
+        assistente.criar_retriever(settings),
+        auditoria,
+        fila_revisao
+    )
+
+
+app.include_router(
+    criar_router(
+        auditoria,
+        fila_revisao,
+        build_secure_assistant(),
+        dependencias=[Depends(require_api_key_in_production), Depends(require_api_key)]
+    )
+)
+
+
+# =========================================================
 # STARTUP
 # =========================================================
 
@@ -929,7 +1051,18 @@ def health():
     dependencies=[Depends(require_api_key)]
 )
 def predict_condition(payload: ConditionPredictionRequest):
-    return model_service.predict_condition(payload)
+    entrada = payload.model_dump()
+    request_id, inicio = seguranca_predicoes.iniciar("/predict/condition", entrada)
+
+    try:
+        result = model_service.predict_condition(payload)
+    except Exception as e:
+        seguranca_predicoes.erro(request_id, e)
+        raise
+
+    return seguranca_predicoes.concluir(
+        request_id, inicio, entrada, result, model_service.condition_sources()
+    )
 
 
 @app.post(
@@ -938,15 +1071,23 @@ def predict_condition(payload: ConditionPredictionRequest):
     dependencies=[Depends(require_api_key)]
 )
 async def predict_image(file: UploadFile = File(...)):
-    try:
-        image_bytes = await file.read()
-        validate_image_bytes(image_bytes)
-        return model_service.predict_image(image_bytes)
+    image_bytes = await file.read()
+    entrada = {"filename": file.filename, **resumo_imagem(image_bytes)}
+    request_id, inicio = seguranca_predicoes.iniciar("/predict/image", entrada)
 
-    except HTTPException:
+    try:
+        validate_image_bytes(image_bytes)
+        result = model_service.predict_image(image_bytes)
+        return seguranca_predicoes.concluir(
+            request_id, inicio, entrada, result, model_service.image_sources(result)
+        )
+
+    except HTTPException as e:
+        seguranca_predicoes.erro(request_id, e)
         raise
 
     except Exception as e:
+        seguranca_predicoes.erro(request_id, e)
         logger.error(traceback.format_exc())
         raise HTTPException(
             status_code=500,
