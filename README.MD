@@ -29,11 +29,11 @@ Cada etapa do projeto está organizada em arquivos separados para facilitar a na
 
 # 📽️ Video da fase 3
 
-* 🚀 [Video Smart VET no youtube](https://youtu.be/GYNvZagiY-A)
+* 🚀 [Video Smart VET no youtube](https://youtu.be/iv3NS07YcLM)
 
 <div align="center">
 
-<a href="https://youtu.be/GYNvZagiY-A" target="_blank" aria-label="Acessar o vídeo do projeto no YouTube">
+<a href="https://youtu.be/iv3NS07YcLM" target="_blank" aria-label="Acessar o vídeo do projeto no YouTube">
  <img width=100% src="./assets/imgs/youtube-logo.gif" alt="Logotipo do YouTube" /></a>
 
 <details>
