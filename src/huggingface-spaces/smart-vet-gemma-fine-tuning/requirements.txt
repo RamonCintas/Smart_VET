@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cu130
+
+transformers==5.23.0
+peft==0.22.0
+accelerate>=1.10.1
+bitsandbytes==0.50.2
+torchvision==0.28.0
+huggingface-hub>=1.31.0,<2.0
+google-genai>=1.0.0

@@ -1,0 +1,25 @@
+# ============================================================
+# SMART VET — CONFIGURAÇÃO DO STREAMLIT
+# Copie este arquivo para .env na pasta da aplicação Streamlit.
+# Substitua os valores de exemplo pelos valores do seu ambiente.
+# ============================================================
+
+# =========================================================
+# SMART VET Streamlit ENV Cloud Render
+# FASTAPI_URL=https://smart-vet-fastapi.onrender.com
+# =========================================================
+
+# URL base da API FastAPI
+FASTAPI_URL=http://localhost:8000
+
+# Chave de acesso à FastAPI
+# Deve ser igual à API_KEY configurada no backend
+API_KEY=...
+
+# Credencial separada para acessar a fila de revisão humana do painel.
+# Deve corresponder a SMARTVET_REVIEWER_KEY configurada no FastAPI/painel.py.
+# Use uma chave longa, aleatória e diferente da chave geral da API.
+SMARTVET_REVIEWER_KEY=...
+
+# Tempo máximo, em segundos, para chamadas HTTP comuns à FastAPI
+STREAMLIT_API_TIMEOUT=120

@@ -1,0 +1,71 @@
+GITHUB_OWNER=RamonCintas
+GITHUB_TOKEN=
+GITHUB_REPOSITORY=Smart_VET
+
+GITHUB_VISIBILITY=public
+
+GIT_USER_NAME=RamonCintas
+GIT_USER_EMAIL=ramoncg.oficial2018@gmail.com
+
+RENDER_API_KEY=
+RENDER_OWNER_ID=
+
+RENDER_REGION=oregon
+RENDER_PLAN=free
+
+FASTAPI_SERVICE_NAME=techchallenge-smartvet-fastapi-oficial
+FASTAPI_BRANCH=main
+FASTAPI_ROOT_DIRECTORY=src/back-end/fastapi
+
+STREAMLIT_SERVICE_NAME=techchallenge-smartvet-streamlit-oficial
+STREAMLIT_BRANCH=main
+STREAMLIT_ROOT_DIRECTORY=src/front-end/streamlit
+
+API_ENV=production
+
+SMART_VET_API_KEY=
+API_KEY=
+
+
+
+# -------------------------
+# TABULAR MODEL (.pkl)
+# -------------------------
+HF_MODEL_REPO=guicon/techchallenge-animal-condition-model
+HF_MODEL_FILENAME=best_model.pkl
+
+# -------------------------
+# TABULAR MODEL (.csv)
+# -------------------------
+HF_DATA_REPO=guicon/techchallenge-animal-condition-dataset
+HF_DATA_FILENAME=data.csv
+
+# -------------------------
+# IMAGE MODEL (.keras)
+# -------------------------
+HF_IMAGE_REPO=ramoncg/techchallenge-pet-computer-vision-model
+HF_IMAGE_FILENAME=pet_model.keras
+
+
+MAX_UPLOAD_BYTES=5242880
+
+# OPENAI_API_KEY=...
+# LLM_PROVIDER=openai
+# LLM_BASE_URL=https://api.openai.com/v1
+# LLM_MODEL=gpt-5.6-luna
+# LLM_JSON_MODE=true
+
+LLM_PROVIDER=gemini
+LLM_API_KEY=
+LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+LLM_MODEL=gemini-3.6-flash
+LLM_JSON_MODE=true
+
+LLM_FALLBACK_1_PROVIDER=huggingface
+LLM_FALLBACK_1_API_KEY=
+LLM_FALLBACK_1_BASE_URL=https://router.huggingface.co/v1
+LLM_FALLBACK_1_MODEL=Qwen/Qwen2.5-7B-Instruct
+LLM_FALLBACK_1_JSON_MODE=true
+
+LLM_TIMEOUT_SECONDS=45
+LLM_TEMPERATURE=0.2

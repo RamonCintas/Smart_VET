@@ -1,0 +1,8 @@
+# -------------------------
+# API TEST CONFIG Local renomear envExample para .env
+# -------------------------
+# \src\back-end\fastapi\.env -> API_KEY=...
+
+TEST_API_URL=http://localhost:8000
+TEST_API_KEY=
+TEST_API_TIMEOUT=120

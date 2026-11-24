@@ -1,0 +1,10 @@
+Settings -> Variables and Secrets -> New Secret
+
+Name            = SMARTVET_SPACE_USER
+Value (private) = ...
+
+Name            = SMARTVET_SPACE_PASSWORD
+Value (private) = ...
+ 
+Name            = HF_TOKEN
+Value (private) = ...
